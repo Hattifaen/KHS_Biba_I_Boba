@@ -135,3 +135,4 @@ class FGIS_Saturn_Sync:
             return True
         print(f"[Saturn] Отчёт по заявке {app.application_id} не принят")
         return False
+    
