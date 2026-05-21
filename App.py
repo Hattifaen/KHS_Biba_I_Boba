@@ -63,9 +63,7 @@ class Seller:
         """
         new_app = Application(seller_id=self.id)
         self.applications.append(new_app)
-        print(
-            f"[Seller] {self.name} подал новую заявку {new_app.application_id}"
-        )
+        print(f"[Seller] {self.name} подал новую заявку {new_app.application_id}")
         return new_app
 
     def upload_document(self, app, url):
@@ -105,22 +103,17 @@ class MarketAdmin:
             app.update_status(ApplicationStatus.REJECTED)
             return False
 
+
 if __name__ == "__main__":
     # Инициализация участников
     seller = Seller(
-        id=uuid.uuid4(),
-        name="Фермер Олег",
-        inn="7701234567",
-        phone="+79001112233"
+        id=uuid.uuid4(), name="Фермер Олег", inn="7701234567", phone="+79001112233"
     )
     admin = MarketAdmin(admin_id=uuid.uuid4(), department="Отдел контроля")
 
     # Подача заявки
     my_app = seller.submit_application()
-    seller.upload_document(
-        my_app,
-        "https://cloud.market.ru/docs/id_01.pdf"
-    )
+    seller.upload_document(my_app, "https://cloud.market.ru/docs/id_01.pdf")
 
     # Имитация верификации в Меркурии
     my_app.is_mercury_verified = True

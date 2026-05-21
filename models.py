@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 import uuid
 
+
 class ApplicationStatus(str, Enum):
     NEW = "NEW"
     VERIFYING = "VERIFYING"
@@ -17,7 +18,7 @@ class Application:
         self.seller_id = seller_id
         self.document_package_url = None
         self.is_mercury_verified = False  # результат проверки Меркурия
-        self.is_saturn_verified = False   # результат проверки Сатурна
+        self.is_saturn_verified = False  # результат проверки Сатурна
 
     def validate(self):
         """Проверяет, готова ли заявка к одобрению."""
@@ -29,14 +30,16 @@ class Application:
 
     def update_status(self, new_status: ApplicationStatus):
         self.status = new_status
-        print(f"[Application] Статус заявки {self.application_id} изменён на {new_status}")
+        print(
+            f"[Application] Статус заявки {self.application_id} изменён на {new_status}"
+        )
 
 
 class Seller:
     def __init__(self, id, full_name, irn, contact_phone):
         self.id = id
         self.full_name = full_name
-        self.irn = irn                  # идентификационный номер (ИНН)
+        self.irn = irn  # идентификационный номер (ИНН)
         self.contact_phone = contact_phone
         self.applications = []
 
@@ -89,7 +92,9 @@ class MarketAdmin:
         if point.is_occupied:
             raise ValueError(f"Точка {point.point_id} уже занята")
         point.assign_seller(seller.id)
-        print(f"[Admin] Продавец {seller.full_name} получил точку {point.point_id} ({point.zone_name})")
+        print(
+            f"[Admin] Продавец {seller.full_name} получил точку {point.point_id} ({point.zone_name})"
+        )
 
 
 class FGIS_Mercury_Sync:
