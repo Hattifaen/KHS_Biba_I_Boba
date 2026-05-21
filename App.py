@@ -3,7 +3,7 @@ import uuid
 
 
 class ApplicationStatus:
-    """Статусы заявки."""
+    # Статусы заявки
     NEW = "NEW"
     VERIFYING = "VERIFYING"
     APPROVED = "APPROVED"
@@ -11,7 +11,7 @@ class ApplicationStatus:
 
 
 class Application:
-    """Представляет заявку продавца."""
+    # Представляет заявку продавца
 
     def __init__(self, seller_id):
         self.application_id = uuid.uuid4()
@@ -45,7 +45,7 @@ class Application:
 
 
 class Seller:
-    """Представляет продавца."""
+    # Представляет продавца
 
     def __init__(self, id, name, inn, phone):
         self.id = id
@@ -81,7 +81,7 @@ class Seller:
 
 
 class MarketAdmin:
-    """Представляет администратора маркетплейса."""
+    # Представляет администратора маркетплейса
 
     def __init__(self, admin_id, department):
         self.admin_id = admin_id
@@ -105,10 +105,8 @@ class MarketAdmin:
             app.update_status(ApplicationStatus.REJECTED)
             return False
 
-
-# --- Пример работы системы ---
 if __name__ == "__main__":
-    # 1. Инициализация участников
+    # Инициализация участников
     seller = Seller(
         id=uuid.uuid4(),
         name="Фермер Олег",
@@ -117,15 +115,15 @@ if __name__ == "__main__":
     )
     admin = MarketAdmin(admin_id=uuid.uuid4(), department="Отдел контроля")
 
-    # 2. Подача заявки
+    # Подача заявки
     my_app = seller.submit_application()
     seller.upload_document(
         my_app,
         "https://cloud.market.ru/docs/id_01.pdf"
     )
 
-    # 3. Имитация верификации в Меркурии
+    # Имитация верификации в Меркурии
     my_app.is_mercury_verified = True
 
-    # 4. Проверка администратором
+    # Проверка администратором
     admin.review_application(my_app)
