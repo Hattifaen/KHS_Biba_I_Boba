@@ -2,8 +2,7 @@ from fastapi import FastAPI, HTTPException
 import uuid
 from models import (
     Seller, TradingPoint, MarketAdmin,
-    FGIS_Mercury_Sync, FGIS_Saturn_Sync, ApplicationStatus, 
-    Application
+    FGIS_Mercury_Sync, FGIS_Saturn_Sync, Application
 )
 
 app = FastAPI(title="СХРЫНКА", version="1.0.0")
