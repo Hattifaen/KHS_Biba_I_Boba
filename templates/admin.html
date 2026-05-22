@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Админ-панель - СХРЫНКА{% endblock %}
+
+{% block content %}
+<h2>⚙️ Админ-панель</h2>
+
+<div class="admin-sections">
+    <div class="admin-section">
+        <h3>⏳ Заявки на рассмотрении</h3>
+        {% if pending_apps %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Заявка</th>
+                    <th>Продавец</th>
+                    <th>Готовность</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in pending_apps %}
+                {% set app = item.application %}
+                <tr>
+                    <td><code>{{ app.application_id|truncate(8) }}</code></td>
+                    <td>{{ item.seller.full_name }}</td>
+                    <td>
+                        {% if app.validate() %}
+                        🟢 Готова
+                        {% else %}
+                        🔴 Не готова
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/review/{{ app.application_id }}" class="btn-primary btn-small">
+                            Рассмотреть
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-text">Нет заявок на рассмотрении</p>
+        {% endif %}
+    </div>
+
+    <div class="admin-section">
+        <h3>🏪 Назначение торговых точек</h3>
+        <form action="/admin/assign-point" method="POST" class="inline-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Продавец</label>
+                    <select name="seller_id" required>
+                        <option value="">Выберите продавца</option>
+                        {% for seller in all_sellers %}
+                        <option value="{{ seller.id }}">{{ seller.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Свободная точка</label>
+                    <select name="point_id" required>
+                        <option value="">Выберите точку</option>
+                        {% for point in free_points_list %}
+                        <option value="{{ point.point_id }}">
+                            №{{ point.point_id }} - {{ point.zone_name }} ({{ point.square_meters }} м²)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group" style="align-self: flex-end;">
+                    <button type="submit" class="btn-primary">✅ Назначить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

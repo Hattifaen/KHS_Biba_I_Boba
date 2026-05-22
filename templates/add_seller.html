@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Добавить продавца - СХРЫНКА{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>➕ Новый продавец</h2>
+
+    <form action="/sellers/add" method="POST" class="styled-form">
+        <div class="form-group">
+            <label for="full_name">Полное имя *</label>
+            <input type="text" id="full_name" name="full_name" required
+                   placeholder="Иванов Иван Иванович">
+        </div>
+
+        <div class="form-group">
+            <label for="irn">ИНН *</label>
+            <input type="text" id="irn" name="irn" required
+                   placeholder="7701234567" pattern="\d{10,12}">
+        </div>
+
+        <div class="form-group">
+            <label for="contact_phone">Контактный телефон *</label>
+            <input type="tel" id="contact_phone" name="contact_phone" required
+                   placeholder="+79001234567">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">✅ Сохранить</button>
+            <a href="/sellers" class="btn-cancel">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

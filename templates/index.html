@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}СХРЫНКА - Главная{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Панель управления</h2>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ sellers_count }}</div>
+            <div class="stat-label">Продавцов</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ points_count }}</div>
+            <div class="stat-label">Торговых точек</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ applications_count }}</div>
+            <div class="stat-label">Заявок</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ free_points }}</div>
+            <div class="stat-label">Свободных точек</div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h3>Быстрые действия</h3>
+        <div class="actions-grid">
+            <a href="/sellers/add" class="action-btn">➕ Добавить продавца</a>
+            <a href="/points/add" class="action-btn">📍 Добавить точку</a>
+            <a href="/applications" class="action-btn">📋 Просмотр заявок</a>
+            <a href="/admin" class="action-btn">⚙️ Администрирование</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ seller.full_name }} - СХРЫНКА{% endblock %}
+
+{% block content %}
+<div class="seller-profile">
+    <div class="page-header">
+        <h2>👤 {{ seller.full_name }}</h2>
+        <a href="/sellers" class="btn-back">← Назад к списку</a>
+    </div>
+
+    <div class="detail-cards">
+        <div class="detail-card">
+            <h3>📋 Информация</h3>
+            <table class="info-table">
+                <tr><td>ID:</td><td>{{ seller.id }}</td></tr>
+                <tr><td>ИНН:</td><td>{{ seller.irn }}</td></tr>
+                <tr><td>Телефон:</td><td>{{ seller.contact_phone }}</td></tr>
+                <tr><td>Заявок подано:</td><td>{{ seller.applications|length }}</td></tr>
+            </table>
+        </div>
+
+        <div class="detail-card">
+            <h3>📝 Заявки продавца</h3>
+            {% if seller.applications %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID заявки</th>
+                        <th>Дата создания</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in seller.applications %}
+                    <tr>
+                        <td><code>{{ app.application_id }}</code></td>
+                        <td>{{ app.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td>
+                            <span class="status-badge status-{{ app.status.value.lower() }}">
+                                {{ app.status.value }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-text">У продавца пока нет заявок</p>
+            {% endif %}
+
+            <form action="/applications/create/{{ seller.id }}" method="POST" style="margin-top: 15px;">
+                <button type="submit" class="btn-primary">📄 Подать новую заявку</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

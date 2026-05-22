@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Торговые точки - СХРЫНКА{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>📍 Торговые точки</h2>
+    <a href="/points/add" class="btn-primary">➕ Добавить точку</a>
+</div>
+
+<div class="points-grid">
+    {% for point in points %}
+    <div class="point-card {% if point.is_occupied %}occupied{% else %}free{% endif %}">
+        <div class="point-header">
+            <span class="point-id">№{{ point.point_id }}</span>
+            <span class="point-status">
+                {% if point.is_occupied %}🚫 Занято{% else %}🟢 Свободно{% endif %}
+            </span>
+        </div>
+        <h3>{{ point.zone_name }}</h3>
+        <div class="point-details">
+            <p>📐 Площадь: {{ point.square_meters }} м²</p>
+            <p>💰 Аренда: {{ point.calculate_rent() }} ₽/мес</p>
+            {% if point.is_occupied %}
+            <p>👤 Продавец ID: <code>{{ point.assigned_seller_id }}</code></p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Продавцы - СХРЫНКА{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>👥 Продавцы</h2>
+    <a href="/sellers/add" class="btn-primary">➕ Добавить продавца</a>
+</div>
+
+{% if sellers %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>ИНН</th>
+                <th>Телефон</th>
+                <th>Заявок</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for seller in sellers %}
+            <tr>
+                <td>{{ seller.full_name }}</td>
+                <td>{{ seller.irn }}</td>
+                <td>{{ seller.contact_phone }}</td>
+                <td>{{ seller.applications|length }}</td>
+                <td>
+                    <a href="/sellers/{{ seller.id }}" class="btn-small">🔍 Просмотр</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>📭 Продавцов пока нет</p>
+    <a href="/sellers/add" class="btn-primary">Добавить первого продавца</a>
+</div>
+{% endif %}
+{% endblock %}

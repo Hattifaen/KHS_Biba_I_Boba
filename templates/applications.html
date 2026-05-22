@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Заявки - СХРЫНКА{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>📋 Заявки</h2>
+</div>
+
+<div class="filter-bar">
+    <span>Фильтр по статусу:</span>
+    <a href="/applications" class="filter-btn active">Все</a>
+    <a href="/applications?status=NEW" class="filter-btn">Новые</a>
+    <a href="/applications?status=APPROVED" class="filter-btn">Одобренные</a>
+    <a href="/applications?status=REJECTED" class="filter-btn">Отклонённые</a>
+</div>
+
+{% if applications %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Продавец</th>
+            <th>Создана</th>
+            <th>Документы</th>
+            <th>Меркурий</th>
+            <th>Сатурн</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in applications %}
+        {% set app = item.application %}
+        {% set seller = item.seller %}
+        <tr>
+            <td><code>{{ app.application_id|truncate(8) }}</code></td>
+            <td>{{ seller.full_name }}</td>
+            <td>{{ app.created_at.strftime('%d.%m.%Y') }}</td>
+            <td>{% if app.document_package_url %}✅{% else %}❌{% endif %}</td>
+            <td>{% if app.is_mercury_verified %}✅{% else %}❌{% endif %}</td>
+            <td>{% if app.is_saturn_verified %}✅{% else %}❌{% endif %}</td>
+            <td>
+                <span class="status-badge status-{{ app.status.value.lower() }}">
+                    {{ app.status.value }}
+                </span>
+            </td>
+            <td>
+                {% if app.status.value == 'NEW' %}
+                <a href="/admin/review/{{ app.application_id }}" class="btn-small">🔍 Проверить</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">📭 Заявок нет</div>
+{% endif %}
+{% endblock %}
