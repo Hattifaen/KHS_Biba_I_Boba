@@ -4,8 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uuid
 from models import (
-    Seller, TradingPoint, MarketAdmin,
-    FGIS_Mercury_Sync, FGIS_Saturn_Sync, ApplicationStatus
+    Seller,
+    TradingPoint,
+    MarketAdmin,
+    FGIS_Mercury_Sync,
+    FGIS_Saturn_Sync,
+    ApplicationStatus,
+    Application,
 )
 
 app = FastAPI(title="СХРЫНКА", version="2.0.0")
@@ -27,41 +32,42 @@ saturn_sync = FGIS_Saturn_Sync()
 
 # ==================== ВЕБ-СТРАНИЦЫ ====================
 
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     free = sum(1 for p in trading_points_db.values() if not p.is_occupied)
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "sellers_count": len(sellers_db),
-        "points_count": len(trading_points_db),
-        "applications_count": len(applications_db),
-        "free_points": free
-    })
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "sellers_count": len(sellers_db),
+            "points_count": len(trading_points_db),
+            "applications_count": len(applications_db),
+            "free_points": free,
+        },
+    )
 
 
 @app.get("/sellers", response_class=HTMLResponse)
 async def sellers_page(request: Request):
-    return templates.TemplateResponse("sellers.html", {
-        "request": request,
-        "sellers": sellers_db.values()
-    })
+    return templates.TemplateResponse(
+        "sellers.html", {"request": request, "sellers": sellers_db.values()}
+    )
 
 
 @app.get("/sellers/add", response_class=HTMLResponse)
 async def add_seller_page(request: Request):
-    return templates.TemplateResponse("add_seller.html", {
-        "request": request
-    })
+    return templates.TemplateResponse("add_seller.html", {"request": request})
 
 
 @app.post("/sellers/add")
 async def add_seller(
-    full_name: str = Form(...),
-    irn: str = Form(...),
-    contact_phone: str = Form(...)
+    full_name: str = Form(...), irn: str = Form(...), contact_phone: str = Form(...)
 ):
     seller_id = str(uuid.uuid4())
-    seller = Seller(id=seller_id, full_name=full_name, irn=irn, contact_phone=contact_phone)
+    seller = Seller(
+        id=seller_id, full_name=full_name, irn=irn, contact_phone=contact_phone
+    )
     sellers_db[seller_id] = seller
     return RedirectResponse(url="/sellers", status_code=303)
 
@@ -71,18 +77,16 @@ async def seller_detail(request: Request, seller_id: str):
     seller = sellers_db.get(seller_id)
     if not seller:
         raise HTTPException(status_code=404, detail="Продавец не найден")
-    return templates.TemplateResponse("seller_detail.html", {
-        "request": request,
-        "seller": seller
-    })
+    return templates.TemplateResponse(
+        "seller_detail.html", {"request": request, "seller": seller}
+    )
 
 
 @app.get("/points", response_class=HTMLResponse)
 async def points_page(request: Request):
-    return templates.TemplateResponse("points.html", {
-        "request": request,
-        "points": trading_points_db.values()
-    })
+    return templates.TemplateResponse(
+        "points.html", {"request": request, "points": trading_points_db.values()}
+    )
 
 
 @app.get("/applications", response_class=HTMLResponse)
@@ -97,10 +101,9 @@ async def applications_page(request: Request, status: str = None):
     # Сортировка: новые сверху
     apps_list.sort(key=lambda x: x["application"].created_at, reverse=True)
 
-    return templates.TemplateResponse("applications.html", {
-        "request": request,
-        "applications": apps_list
-    })
+    return templates.TemplateResponse(
+        "applications.html", {"request": request, "applications": apps_list}
+    )
 
 
 @app.get("/admin", response_class=HTMLResponse)
@@ -116,12 +119,15 @@ async def admin_page(request: Request):
     # Свободные точки
     free_points = [p for p in trading_points_db.values() if not p.is_occupied]
 
-    return templates.TemplateResponse("admin.html", {
-        "request": request,
-        "pending_apps": pending,
-        "all_sellers": sellers_db.values(),
-        "free_points_list": free_points
-    })
+    return templates.TemplateResponse(
+        "admin.html",
+        {
+            "request": request,
+            "pending_apps": pending,
+            "all_sellers": sellers_db.values(),
+            "free_points_list": free_points,
+        },
+    )
 
 
 @app.post("/admin/review/{application_id}")
@@ -135,10 +141,7 @@ async def admin_review_action(application_id: str):
 
 
 @app.post("/admin/assign-point")
-async def admin_assign_point(
-    seller_id: str = Form(...),
-    point_id: int = Form(...)
-):
+async def admin_assign_point(seller_id: str = Form(...), point_id: int = Form(...)):
     seller = sellers_db.get(seller_id)
     point = trading_points_db.get(point_id)
 
@@ -155,10 +158,13 @@ async def admin_assign_point(
 
 # ==================== API (для программного доступа) ====================
 
+
 @app.post("/api/sellers/")
 def create_seller_api(full_name: str, irn: str, contact_phone: str):
     seller_id = str(uuid.uuid4())
-    seller = Seller(id=seller_id, full_name=full_name, irn=irn, contact_phone=contact_phone)
+    seller = Seller(
+        id=seller_id, full_name=full_name, irn=irn, contact_phone=contact_phone
+    )
     sellers_db[seller_id] = seller
     return {"seller_id": seller_id}
 
@@ -166,7 +172,9 @@ def create_seller_api(full_name: str, irn: str, contact_phone: str):
 @app.post("/api/points/")
 def create_point_api(zone_name: str, square_meters: float):
     point_id = max(trading_points_db.keys(), default=0) + 1
-    point = TradingPoint(point_id=point_id, zone_name=zone_name, square_meters=square_meters)
+    point = TradingPoint(
+        point_id=point_id, zone_name=zone_name, square_meters=square_meters
+    )
     trading_points_db[point_id] = point
     return {"point_id": point_id}
 
